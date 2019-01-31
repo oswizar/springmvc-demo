@@ -24,6 +24,7 @@
     <%--lastName属性在添加时显示，修改时隐藏不进行修改--%>
     <c:if test="${employee.id == null}">
         LastName: <form:input path="lastName"/>
+        <form:errors path="lastName"></form:errors>
     </c:if>
 
 
@@ -39,6 +40,7 @@
 
     <br>
     Email: <form:input path="email"/>
+    <form:errors path="email"></form:errors>
     <br>
     <%
         Map<String, String> genders = new HashMap<>();
@@ -59,11 +61,20 @@
         3.数据校验
     --%>
 
-    <%--Birth: <form:input path="birth" />--%>
+    Birth: <form:input path="birth" />
+    <form:errors path="birth"></form:errors>
+    <br>
+
+    Salary: <form:input path="salary" />
     <br>
 
     <input type="submit" value="Submit"/>
 
+
+    <br>
+    <%--<form:errors path="*"></form:errors>--%>
+
+    <br>
 </form:form>
 
 </body>

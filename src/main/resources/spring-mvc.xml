@@ -29,22 +29,45 @@
     <!--配置直接转发的页面-->
     <!--可以直接响应转发的页面，而无需再经过Handler-->
     <mvc:view-controller path="/success" view-name="success"/>
+
     <!--防止RequestMapping无效-->
-    <mvc:annotation-driven conversion-service="employeeConverter"/>
+    <mvc:annotation-driven conversion-service="employeeConversionService"/>
 
-
+    <!--配置可直接访问静态资源文件-->
     <mvc:default-servlet-handler/>
 
     <!--配置BeanNameViewResolver 解析器，使用视图的名字来解析视图-->
     <!--通过order属性来定义视图解析器的优先级，order的值越小，优先级越高-->
-    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+    <bean id="viewResolver"
+          class="org.springframework.web.servlet.view.BeanNameViewResolver">
         <property name="order" value="100"></property>
     </bean>
 
+    <!--配置文件上传-->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"></property>
+        <property name="maxUploadSize" value="5242880"></property>
+    </bean>
 
-    <!--配置ConversionService-->
-    <bean id="employeeConverter"
-    class="org.springframework.context.support.ConversionServiceFactoryBean">
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <!--配置LocaleChangeInterceptor拦截器-->
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"></bean>
+
+        <!--配置自定义拦截器-->
+        <bean class="com.xiexing.interceptor.FirstInterceptor"></bean>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/emps"/>
+            <bean class="com.xiexing.interceptor.SecondInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+    <!--配置自定义数据类型转换器ConversionService-->
+    <bean id="employeeConversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="converters">
             <set>
                 <ref bean="employeeConverter"/>
@@ -52,6 +75,17 @@
         </property>
     </bean>
 
+
+    <!--配置SimpleMappingExceptionResolver来映射异常-->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionAttribute" value="ex"></property>
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.ArrayIndexOutOfBoundsException">error</prop>
+            </props>
+        </property>
+
+    </bean>
 
 
 </beans>

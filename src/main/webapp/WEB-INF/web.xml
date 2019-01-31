@@ -44,9 +44,25 @@
     </filter-mapping>
 
 
+
+    <!--设置字符过滤器-->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
     <!--设置默认加载页面-->
     <welcome-file-list>
-        <welcome-file>gateway.jsp</welcome-file>
+        <welcome-file>desktop.jsp</welcome-file>
         <welcome-file>index.jsp</welcome-file>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

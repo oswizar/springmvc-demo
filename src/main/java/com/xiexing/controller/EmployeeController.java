@@ -10,13 +10,18 @@ package com.xiexing.controller;
 import com.xiexing.dao.DepartmentDao;
 import com.xiexing.dao.EmployeeDao;
 import com.xiexing.entity.Employee;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import javax.validation.Valid;
+import java.util.*;
 
+@Slf4j
 @Controller
 public class EmployeeController {
 
@@ -28,7 +33,34 @@ public class EmployeeController {
 
 
 
+    @RequestMapping("/testJson")
+    @ResponseBody
+    public Collection<Employee> testJson() {
+        return employeeDao.getEmployeeMap();
+    }
 
+    @ResponseBody
+    @RequestMapping("/testJson1")
+    public Map test1(){
+        List list=new ArrayList();
+        list.add("111");
+        list.add("www");
+
+        Set set = new HashSet();
+        set.add("ddd");
+        set.add("ccc");
+        Map map = new HashMap();
+        map.put("ll",list);
+        map.put("ss",set);
+        return map;
+    }
+
+
+    /**
+     * 测试自定义数据类型转换器
+     * @param employee
+     * @return
+     */
     @RequestMapping("/testConversionServiceConverter")
     public String testConversionServiceConverter(Employee employee) {
         System.out.println("save: " + employee);
@@ -88,13 +120,23 @@ public class EmployeeController {
     }
 
     /**
-     * 添加员工操作
+     * 添加员工
      * @param employee
      * @return
      */
     @RequestMapping(value = "/emp",method = RequestMethod.POST)
-    public String save(Employee employee) {
-        System.out.println(employee);
+    public String save(@Valid Employee employee, BindingResult result,
+                       Map<String,Object> map) {
+        System.out.println("save:" + employee);
+        if(result.getErrorCount() > 0) {
+            System.out.println("======================出错了!");
+            for(FieldError error : result.getFieldErrors()) {
+                System.out.println(error.getField() + ":" + error.getDefaultMessage());
+            }
+            System.out.println("=====================打印验证错误信息完毕!");
+            map.put("departments",departmentDao.getDepartmentMap());
+            return "input";
+        }
         employeeDao.save(employee);
         return "redirect:/emps";
     }
@@ -120,13 +162,13 @@ public class EmployeeController {
     @RequestMapping("/emps")
     public String list(Map<String,Object> map, HttpServletRequest request) {
         map.put("employees",employeeDao.getEmployeeMap());
-        System.out.println(map);
 
+        log.info("=====================================================================");
         System.out.println("============================");
         System.out.println("request.getContextPath():"+request.getContextPath());
         System.out.println("request.getServletPath():"+request.getServletPath());
         System.out.println("request.getRequestURI():"+request.getRequestURI());
-        System.out.println("request.getRealPath(\"/\"):"+request.getRealPath("/"));
+
 
         // 返回结果到 list.jsp 页面进行展示
         return "list";

@@ -7,13 +7,29 @@
  */
 package com.xiexing.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Past;
 import java.util.Date;
 
 public class Employee {
 
     private Integer id;
+
+    @NotEmpty
     private String lastName;
+
+    @Email
     private String email;
+
+    @NumberFormat(pattern = "#,###,###.#")
+    private float salary;
+
+    @Past
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birth;
     /**
      * 1 male, 0 female
@@ -30,6 +46,25 @@ public class Employee {
         this.email = email;
         this.gender = gender;
         this.department = department;
+    }
+
+    public Employee(Integer id, String lastName, String email, float salary, Date birth, Integer gender, Department department) {
+        this.id = id;
+        this.lastName = lastName;
+        this.email = email;
+        this.salary = salary;
+        this.birth = birth;
+        this.gender = gender;
+        this.department = department;
+    }
+
+
+    public float getSalary() {
+        return salary;
+    }
+
+    public void setSalary(float salary) {
+        this.salary = salary;
     }
 
     public Date getBirth() {
@@ -86,6 +121,7 @@ public class Employee {
                 "id=" + id +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", salary=" + salary +
                 ", birth=" + birth +
                 ", gender=" + gender +
                 ", department=" + department +
