@@ -1,2 +1,2 @@
 # springmvc-demo
-spring-demo
+springmvc-demo
