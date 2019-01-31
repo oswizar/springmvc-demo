@@ -12,5 +12,7 @@
 <br>
 <a href="fileupload.jsp">fileUpload</a>
 <br>
+<a href="testLog">testLog</a>
+<br>
 </body>
 </html>
